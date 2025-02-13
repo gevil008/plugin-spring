@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.pluginspring.mapper.TopicTableMapper">
+    <resultMap id="BaseResultMap" type="com.example.pluginspring.entry.TopicTable">
+        <!--@mbg.generated-->
+        <!--@Table topic_table-->
+        <id column="topic_id" jdbcType="VARCHAR" property="topicId" />
+        <result column="topic_name" jdbcType="LONGVARCHAR" property="topicName" />
+        <result column="chapter_id" jdbcType="VARCHAR" property="chapterId" />
+        <result column="option_id" jdbcType="VARCHAR" property="optionId" />
+        <result column="analysis" jdbcType="LONGVARCHAR" property="analysis" />
+        <result column="topic_img" jdbcType="VARCHAR" property="topicImg" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="analysis_img" jdbcType="VARCHAR" property="analysisImg" />
+        <collection property="optionData" ofType="com.example.pluginspring.entry.OptionsTable" javaType="ArrayList">
+            <id column="opt_id" jdbcType="VARCHAR" property="optionId" />
+            <result column="option_name" jdbcType="VARCHAR" property="optionName" />
+            <result column="tppic_id" jdbcType="VARCHAR" property="tppicId" />
+            <result column="option_img" jdbcType="VARCHAR" property="optionImg" />
+            <result column="opt_sort" jdbcType="INTEGER" property="sort" />
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        topic_id, topic_name, chapter_id, option_id, analysis, topic_img, sort,analysis_img
+    </sql>
+
+    <select id="queryTopicList" resultMap="BaseResultMap" parameterType="String">
+        select top.topic_id,
+        top.topic_name,
+        top.chapter_id,
+        top.option_id,
+        top.analysis,
+        top.topic_img,
+        top.sort,
+        top.analysis_img,
+        opt.option_id as opt_id,
+        opt.option_name,
+        opt.tppic_id,
+        opt.option_img,
+        opt.sort as opt_sort
+        from topic_table top left join options_table opt
+        on top.topic_id = opt.tppic_id
+        <where>
+            <if test="chapterId != null and chapterId != ''">
+                and top.chapter_id  = #{chapterId}
+            </if>
+        </where>
+        order by top.sort,opt.sort
+    </select>
+
+</mapper>
